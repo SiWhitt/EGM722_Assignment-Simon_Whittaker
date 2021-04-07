@@ -3,24 +3,10 @@ import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 import matplotlib.patches as mpatches
 import matplotlib.lines as mlines
-
-
 import pandas as pd
 from cartopy.feature import ShapelyFeature
 from shapely.geometry import Point, LineString, Polygon
 
-
-# %matplotlib notebook #not sure if this is required for the work that I am doing
-
-plt.ion() # make the plotting interactive
-
-# generate matplotlib handles to create a legend of the features we put in our map.
-def generate_handles(labels, colors, edge='k', alpha=1):
-    lc = len(colors)  # get the length of the color list
-    handles = []
-    for i in range(len(labels)):
-        handles.append(mpatches.Rectangle((0, 0), 1, 1, facecolor=colors[i % lc], edgecolor=edge, alpha=alpha))
-    return handles
 
 
 # create a scale bar of length 40 km in the lower right corner of the map
@@ -43,16 +29,22 @@ def scale_bar(ax, location=(0.9, 0.05)):
     plt.text(sbx - 50000, sby - 8000, '0 km', transform=tmc, fontsize=6)
 
 
+
 # load the outline of Northern Ireland and Ireland
 outline = gpd.read_file('data_files/Ireland.shp')
 outline = outline.to_crs(epsg=2158)
+
+
 
 #load datasets for display on map
 #water = gpd.read_file('data_files/Ire_Water.shp')
 #water = water.to_crs(epsg=2158)
 
-counties = gpd.read_file('data_files/Ire_Counties.shp')
-counties = counties.to_crs(epsg=2158)
+#counties = gpd.read_file('data_files/Ire_Counties.shp')
+#counties = counties.to_crs(epsg=2158)
+
+COVID_Stats = gpd.read_file('data_files/Covid19CountyStatisticsHPSCIreland.shp')
+COVID_Stats = COVID_Stats.to_crs(epsg=2158)
 
 
 
@@ -78,11 +70,23 @@ gridlines.left_labels = False # turn off the left-side labels
 gridlines.bottom_labels = False # turn off the bottom labels
 
 #add datafiles to map
+
+COVID_Cases = ShapelyFeature(COVID_Stats['geometry'], myCRS,
+                            edgecolor='k',
+                            facecolor='w',
+                            linewidth=1)
+ax.add_feature(COVID_Cases)
+
+
+""" Adding Ireland Counties to Map
 Counties = ShapelyFeature(counties['geometry'], myCRS,
                             edgecolor='k',
                             facecolor='w',
                             linewidth=1)
 ax.add_feature(Counties)
+
+"""
+
 """ Adding Water bodies to the map
 Waterbodies = ShapelyFeature(water['geometry'], myCRS,
                             edgecolor='mediumblue',
@@ -92,9 +96,8 @@ ax.add_feature(Waterbodies)
 
 """
 
-
 scale_bar(ax) #Add scale bar to map
 
-ax. set(title='Island of Ireland with Towns and Shipwreck Locations') # Apply Title to Map of Ireland with Towns
+ax.set(title='Republic of Ireland COVID cases per 100k population') # Apply Title to Map of Ireland with Towns
 
 myFig.savefig('map.png', bbox_inches='tight', dpi=300) #Save Map of Ireland as png file
