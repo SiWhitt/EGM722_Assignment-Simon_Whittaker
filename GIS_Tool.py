@@ -15,18 +15,18 @@ def scale_bar(ax, location=(0.9, 0.05)):
     sbllx = (llx1 + llx0) / 2
     sblly = lly0 + (lly1 - lly0) * location[1]
 
-    tmc = ccrs.TransverseMercator(sbllx, sblly)
+    tmc = ccrs.Mercator(sbllx, sblly)
     x0, x1, y0, y1 = ax.get_extent(tmc)
     sbx = x0 + (x1 - x0) * location[0]
     sby = y0 + (y1 - y0) * location[1]
 
-    plt.plot([sbx, sbx - 40000], [sby, sby], color='k', linewidth=9, transform=tmc)
-    plt.plot([sbx, sbx - 20000], [sby, sby], color='k', linewidth=6, transform=tmc)
-    plt.plot([sbx - 20000, sbx - 40000], [sby, sby], color='w', linewidth=6, transform=tmc)
+    plt.plot([sbx, sbx - 40000], [sby, sby], color='k', linewidth=6, transform=tmc)
+    plt.plot([sbx, sbx - 20000], [sby, sby], color='k', linewidth=4, transform=tmc)
+    plt.plot([sbx - 20000, sbx - 40000], [sby, sby], color='w', linewidth=4, transform=tmc)
 
-    plt.text(sbx, sby - 8000, '40 km', transform=tmc, fontsize=6)
-    plt.text(sbx - 25000, sby - 8000, '20 km', transform=tmc, fontsize=6)
-    plt.text(sbx - 50000, sby - 8000, '0 km', transform=tmc, fontsize=6)
+    plt.text(sbx, sby - 8000, '40 km', transform=tmc, fontsize=5)
+    plt.text(sbx - 25000, sby - 8000, '20 km', transform=tmc, fontsize=5)
+    plt.text(sbx - 50000, sby - 8000, '0 km', transform=tmc, fontsize=5)
 
 
 
@@ -37,14 +37,12 @@ outline = outline.to_crs(epsg=2158)
 
 
 #load datasets for display on map
-#water = gpd.read_file('data_files/Ire_Water.shp')
-#water = water.to_crs(epsg=2158)
+water = gpd.read_file('data_files/Ire_Water.shp')
+water = water.to_crs(epsg=2158)
 
 #counties = gpd.read_file('data_files/Ire_Counties.shp')
 #counties = counties.to_crs(epsg=2158)
 
-COVID_Stats = gpd.read_file('data_files/Covid19CountyStatisticsHPSCIreland.shp')
-COVID_Stats = COVID_Stats.to_crs(epsg=2158)
 
 
 
@@ -66,17 +64,10 @@ ax.set_extent([xmin, xmax, ymin, ymax], crs=myCRS) # set the extent to the bound
 gridlines = ax.gridlines(draw_labels=True,
                          xlocs=[-10.5, -10, -9.5, -9, -8.5, -8, -7.5, -7, -6.5, -6, -5.5],
                          ylocs=[51, 51.5, 52, 52.5, 53, 53.5, 54, 54.5, 55])
-gridlines.left_labels = False # turn off the left-side labels
-gridlines.bottom_labels = False # turn off the bottom labels
+gridlines.right_labels = False # turn off the left-side labels
+gridlines.top_labels = False # turn off the bottom labels
 
 #add datafiles to map
-
-COVID_Cases = ShapelyFeature(COVID_Stats['geometry'], myCRS,
-                            edgecolor='k',
-                            facecolor='w',
-                            linewidth=1)
-ax.add_feature(COVID_Cases)
-
 
 """ Adding Ireland Counties to Map
 Counties = ShapelyFeature(counties['geometry'], myCRS,
@@ -87,17 +78,17 @@ ax.add_feature(Counties)
 
 """
 
-""" Adding Water bodies to the map
+"""Adding Water bodies to the map"""
 Waterbodies = ShapelyFeature(water['geometry'], myCRS,
                             edgecolor='mediumblue',
                             facecolor='mediumblue',
                             linewidth=1)
 ax.add_feature(Waterbodies)
 
-"""
+
 
 scale_bar(ax) #Add scale bar to map
 
-ax.set(title='Republic of Ireland COVID cases per 100k population') # Apply Title to Map of Ireland with Towns
+ax.set(title='Points of Interest within 20km of holiday day trip loction') # Apply Title to Map of Ireland with Towns
 
 myFig.savefig('map.png', bbox_inches='tight', dpi=300) #Save Map of Ireland as png file
