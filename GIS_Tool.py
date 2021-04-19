@@ -7,7 +7,13 @@ import pandas as pd
 from cartopy.feature import ShapelyFeature
 from shapely.geometry import Point, LineString, Polygon
 
-
+# generate matplotlib handles to create a legend of the features we put in our map.
+def generate_handles(labels, colors, edge='k', alpha=1):
+    lc = len(colors)  # get the length of the color list
+    handles = []
+    for i in range(len(labels)):
+        handles.append(mpatches.Rectangle((0, 0), 1, 1, facecolor=colors[i % lc], edgecolor=edge, alpha=alpha))
+    return handles
 
 # create a scale bar of length 40 km in the lower right corner of the map
 def scale_bar(ax, location=(0.9, 0.05)):
@@ -40,11 +46,14 @@ outline = outline.to_crs(epsg=2158)
 water = gpd.read_file('data_files/Ire_Water.shp')
 water = water.to_crs(epsg=2158)
 
-#counties = gpd.read_file('data_files/Ire_Counties.shp')
-#counties = counties.to_crs(epsg=2158)
+counties = gpd.read_file('data_files/Ire_Counties.shp')
+counties = counties.to_crs(epsg=2158)
 
+center_counties = gpd.read_file('data_files/Counties_Center_pts.shp')
+center_counties = center_counties.to_crs(epsg=2158)
 
-
+towns = gpd.read_file('data_files/Ire_Places.shp')
+towns = towns.to_crs(epsg=2158)
 
 
 # create a figure of size 20x60 (representing the page size in inches)
@@ -69,14 +78,19 @@ gridlines.top_labels = False # turn off the bottom labels
 
 #add datafiles to map
 
-""" Adding Ireland Counties to Map
+""" Adding Ireland Counties to Map """
 Counties = ShapelyFeature(counties['geometry'], myCRS,
                             edgecolor='k',
                             facecolor='w',
-                            linewidth=1)
+                            linewidth=0.25)
 ax.add_feature(Counties)
 
-"""
+
+# get a list of unique names for the county boundaries
+#county_names = list(counties.name.unique())
+#county_names.sort()  # sort the counties alphabetically by name
+
+
 
 """Adding Water bodies to the map"""
 Waterbodies = ShapelyFeature(water['geometry'], myCRS,
@@ -85,7 +99,49 @@ Waterbodies = ShapelyFeature(water['geometry'], myCRS,
                             linewidth=1)
 ax.add_feature(Waterbodies)
 
+"""Adding Towns to the map"""
+# ShapelyFeature creates a polygon, so for point data we can just use ax.plot()
+# town_handle = ax.plot(towns.geometry.x, towns.geometry.y, 's', color='0.5', ms=6, transform=myCRS)
 
+#town_handle = ax.plot(towns[towns['fclass'] == 'town'].geometry.x, towns[towns['fclass'] == 'town'].geometry.y, 's', color='0', ms=6, transform=myCRS)
+
+city_handle = ax.plot(towns[towns['fclass'] == 'city'].geometry.x, towns[towns['fclass'] == 'city'].geometry.y, '*', color='r', ms=6, transform=myCRS)
+
+
+"""
+# add the text labels for the towns
+for i, row in towns.iterrows():
+    x, y = row.geometry.x, row.geometry.y
+    plt.text(x, y, row['name'].title(), fontsize=8, transform=myCRS) # use plt.text to place a label at x,y
+"""
+
+"""
+# add the text labels for the counties
+
+##counties['coords'] = counties['geometry'].apply(lambda x: x.centroid.coords[:])
+##counties['coords'] = [coords[0] for coords in counties['coords']]
+"""
+for i, row in center_counties.iterrows():
+    x, y = row.geometry.x, row.geometry.y
+    plt.text(x, y, row['name'].title(), fontsize=4, transform=myCRS) # use plt.text to place a label at x,y
+
+
+# ax.legend() takes a list of handles and a list of labels corresponding to the objects you want to add to the legend
+handles = city_handle
+labels = ['Cities']
+
+leg = ax.legend(handles, labels, title='Legend', title_fontsize=14,
+                 fontsize=12, loc='upper left', frameon=True, framealpha=1)
+
+"""
+handles = county_handles + water_handle + river_handle + town_handle + city_handle
+labels = nice_names + ['Lakes', 'Rivers', 'Towns', 'Cities']
+
+leg = ax.legend(handles, labels, title='Legend', title_fontsize=14,
+                 fontsize=12, loc='upper left', frameon=True, framealpha=1)
+
+
+"""
 
 scale_bar(ax) #Add scale bar to map
 
