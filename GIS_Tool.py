@@ -46,6 +46,9 @@ outline = outline.to_crs(epsg=2158)
 water = gpd.read_file('data_files/Files_for_analysis/Ire_Water.shp')
 water = water.to_crs(epsg=2158)
 
+rivers = gpd.read_file('data_files/Files_for_analysis/Ire_Rivers_Canals.shp')
+rivers = rivers.to_crs(epsg=2158)
+
 counties = gpd.read_file('data_files/Files_for_analysis/Ire_Counties.shp')
 counties = counties.to_crs(epsg=2158)
 
@@ -99,6 +102,12 @@ Waterbodies = ShapelyFeature(water['geometry'], myCRS,
                             linewidth=1)
 ax.add_feature(Waterbodies)
 
+Rivers = ShapelyFeature(rivers['geometry'], myCRS,
+                        edgecolor='royalblue',
+                        linewidth=1)
+
+ax.add_feature(Rivers)
+
 """Adding Towns to the map"""
 # ShapelyFeature creates a polygon, so for point data we can just use ax.plot()
 # town_handle = ax.plot(towns.geometry.x, towns.geometry.y, 's', color='0.5', ms=6, transform=myCRS)
@@ -106,6 +115,12 @@ ax.add_feature(Waterbodies)
 #town_handle = ax.plot(towns[towns['fclass'] == 'town'].geometry.x, towns[towns['fclass'] == 'town'].geometry.y, 's', color='0', ms=6, transform=myCRS)
 
 city_handle = ax.plot(towns[towns['fclass'] == 'city'].geometry.x, towns[towns['fclass'] == 'city'].geometry.y, '*', color='r', ms=6, transform=myCRS)
+
+# note: if you change the color you use to display lakes, you'll want to change it here, too
+water_handle = generate_handles(['Waterbodies'], ['mediumblue'])
+
+# note: if you change the color you use to display rivers, you'll want to change it here, too
+rivers_handle = [mlines.Line2D([], [], color='royalblue')]  # have to make this a list
 
 
 """
@@ -127,8 +142,8 @@ for i, row in center_counties.iterrows():
 
 
 # ax.legend() takes a list of handles and a list of labels corresponding to the objects you want to add to the legend
-handles = city_handle
-labels = ['Cities']
+handles = city_handle + water_handle + rivers_handle
+labels = ['Cities', 'Waterbodies', 'Rivers']
 
 leg = ax.legend(handles, labels, title='Legend', title_fontsize=14,
                  fontsize=12, loc='upper left', frameon=True, framealpha=1)
