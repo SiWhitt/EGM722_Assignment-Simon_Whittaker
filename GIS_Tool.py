@@ -37,22 +37,22 @@ def scale_bar(ax, location=(0.9, 0.05)):
 
 
 # load the outline of Northern Ireland and Ireland
-outline = gpd.read_file('data_files/Ireland.shp')
+outline = gpd.read_file('data_files/Simplified_Shapes/Ireland.shp')
 outline = outline.to_crs(epsg=2158)
 
 
 
 #load datasets for display on map
-water = gpd.read_file('data_files/Ire_Water.shp')
+water = gpd.read_file('data_files/Files_for_analysis/Ire_Water.shp')
 water = water.to_crs(epsg=2158)
 
-counties = gpd.read_file('data_files/Ire_Counties.shp')
+counties = gpd.read_file('data_files/Files_for_analysis/Ire_Counties.shp')
 counties = counties.to_crs(epsg=2158)
 
-center_counties = gpd.read_file('data_files/Counties_Center_pts.shp')
+center_counties = gpd.read_file('data_files/Simplified_Shapes/Counties_Center_pts.shp')
 center_counties = center_counties.to_crs(epsg=2158)
 
-towns = gpd.read_file('data_files/Ire_Places.shp')
+towns = gpd.read_file('data_files/Files_for_analysis/Ire_Places.shp')
 towns = towns.to_crs(epsg=2158)
 
 
