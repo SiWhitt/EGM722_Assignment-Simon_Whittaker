@@ -1,11 +1,14 @@
 import geopandas as gpd
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
-import matplotlib.patches as mpatches
 import matplotlib.lines as mlines
 import pandas as pd
-from cartopy.feature import ShapelyFeature
 from shapely.geometry import Point, LineString, Polygon
+import pandas as pd
+from cartopy.feature import ShapelyFeature
+import cartopy.crs as ccrs
+import matplotlib.patches as mpatches
+
 
 # generate matplotlib handles to create a legend of the features we put in our map.
 def generate_handles(labels, colors, edge='k', alpha=1):
@@ -163,3 +166,51 @@ scale_bar(ax) #Add scale bar to map
 ax.set(title='Points of Interest within 20km of holiday day trip loction') # Apply Title to Map of Ireland with Towns
 
 myFig.savefig('map.png', bbox_inches='tight', dpi=300) #Save Map of Ireland as png file
+
+"""The following lines of code use the rivers shapefile alongwith the counties shaprfile to produce a barchart
+depicting the total lenght of rivers in each county in ireland and Northern Ireland"""
+
+for i, row in rivers.iterrows():  # iterate over each row in the GeoDataFrame
+    rivers.loc[i, 'Length'] = row['geometry'].length  # assign the row's geometry length to a new column, Length
+
+#print(rivers.head())  # print the updated GeoDataFrame to see the changes
+
+join = gpd.sjoin(rivers, counties) #, how='inner', lsuffix='left', rsuffix='right') # perform the spatial join
+
+join_total = join['Length'].sum() # find the total length of roads in the join GeoDataFrame
+
+clipped = [] # initialize an empty list
+for county in counties['name'].unique():
+    tmp_clip = gpd.clip(rivers, counties[counties['name'] == county]) # clip the roads by county border
+    for i, row in tmp_clip.iterrows():
+        tmp_clip.loc[i, 'Length'] = row['geometry'].length # we have to update the length for any clipped roads
+        tmp_clip.loc[i, 'name'] = county # set the county name for each road feature
+    clipped.append(tmp_clip) # add the clipped GeoDataFrame to the
+
+# pandas has a function, concat, which will combine (concatenate) a list of DataFrames (or GeoDataFrames)
+# we can then create a GeoDataFrame from the combined DataFrame, as the combined DataFrame will have a geometry column.
+clipped_gdf = gpd.GeoDataFrame(pd.concat(clipped))
+clip_total = clipped_gdf['Length'].sum()
+
+#print (clipped_gdf.groupby('name') [['Length']].sum()/1000)
+
+total_rivers_per_county = (clipped_gdf.groupby('name') [['Length']].sum()/1000)
+
+fig = total_rivers_per_county.plot(kind='bar', width=0.8, rot=90, title="Total Length of Rivers in Irish Counties")
+
+plt.style.use('seaborn-dark-palette')
+plt.minorticks_on()
+plt.grid(which='both', axis='y', linestyle='-', linewidth='0.5', color='black')
+plt.xlabel('Counties')
+plt.ylabel('Total Length of Rivers')
+
+
+plt.subplots_adjust(bottom = 0.25, left = 0.2)
+
+#plt.show
+
+chart = fig.get_figure()
+chart.savefig("Total Length of rivers in Irish Counties.png", transparent=True, dpi=300)
+
+
+
