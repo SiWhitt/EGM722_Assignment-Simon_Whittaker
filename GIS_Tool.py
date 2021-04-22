@@ -209,6 +209,8 @@ plt.subplots_adjust(bottom=0.25, left=0.2)
 chart = fig.get_figure()
 chart.savefig('Outputs/Total Length of rivers in Irish Counties.png', transparent=True, dpi=300)
 
+
+
 """The following lines of code create a chloropleth map of the inland water area of counties in ireland 
 to determine which would be best to visit for a fishing trip"""
 
