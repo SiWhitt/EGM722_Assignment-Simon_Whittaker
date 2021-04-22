@@ -226,3 +226,5 @@ ax = water_per_county.plot(column='sum_area_s', ax=ax, vmin=0, vmax=275, cmap='b
 ax.axis('off')
 
 fig.savefig('Outputs/Total area of inland water per county in ireland.png', dpi=300, bbox_inches='tight')
+
+"""Possibly add code which creates a buffer around costal towns and displays shipwrecks"""
