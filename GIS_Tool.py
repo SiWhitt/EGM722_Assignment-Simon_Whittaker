@@ -163,7 +163,7 @@ scale_bar(ax)  # Add scale bar to map
 
 ax.set(title='Points of Interest within 20km of holiday day trip loction')  # Apply Title to Map of Ireland with Towns
 
-myFig.savefig('Outputs/Planning Map.png', bbox_inches='tight', dpi=300)  # Save Map of Ireland as png file
+myFig.savefig('results/Planning Map.png', bbox_inches='tight', dpi=300)  # Save Map of Ireland as png file
 
 """The following lines of code use the rivers shapefile alongwith the counties shaprfile to produce a barchart
 depicting the total lenght of rivers in each county in ireland and Northern Ireland"""
@@ -207,7 +207,7 @@ plt.subplots_adjust(bottom=0.25, left=0.2)
 # plt.show
 
 chart = fig.get_figure()
-chart.savefig('Outputs/Total Length of rivers in Irish Counties.png', transparent=True, dpi=300)
+chart.savefig('results/Total Length of rivers in Irish Counties.png', transparent=True, dpi=300)
 
 
 
@@ -225,6 +225,6 @@ ax = water_per_county.plot(column='sum_area_s', ax=ax, vmin=0, vmax=275, cmap='b
 # Switch off the bounding box drawn round the map so it looks a bit tidier
 ax.axis('off')
 
-fig.savefig('Outputs/Total area of inland water per county in ireland.png', dpi=300, bbox_inches='tight')
+fig.savefig('results/Total area of inland water per county in ireland.png', dpi=300, bbox_inches='tight')
 
 """Possibly add code which creates a buffer around costal towns and displays shipwrecks"""
