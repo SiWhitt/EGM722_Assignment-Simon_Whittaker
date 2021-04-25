@@ -161,7 +161,7 @@ leg = ax.legend(handles, labels, title='Legend', title_fontsize=14,
 
 scale_bar(ax)  # Add scale bar to map
 
-ax.set(title='Points of Interest within 20km of holiday day trip loction')  # Apply Title to Map of Ireland with Towns
+ax.set(title='Map for planning fishing trips in Ireland')  # Apply Title to Map of Ireland with Towns
 
 myFig.savefig('output/Planning Map.png', bbox_inches='tight', dpi=300)  # Save Map of Ireland as png file
 
