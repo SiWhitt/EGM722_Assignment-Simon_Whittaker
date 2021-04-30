@@ -3,3 +3,7 @@
 *.lock
 
 
+Create_chloropleth_map_of_water_area_per_county.ipynb
+.ipynb_checkpoints/Create_chloropleth_map_of_water_area_per_county-checkpoint.ipynb
+*.ipynb
+*.ipynb
