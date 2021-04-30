@@ -44,7 +44,10 @@ outline = gpd.read_file('data_files/Simplified_Shapes/Ireland.shp')
 outline = outline.to_crs(epsg=2158)
 
 # load datasets for display on map
-water = gpd.read_file('data_files/Files_for_analysis/Ire_Water.shp')
+#water = gpd.read_file('data_files/Files_for_analysis/Ire_Water.shp')
+#water = water.to_crs(epsg=2158)
+
+water = gpd.read_file('data_files/Simplified_Shapes/Ire_Water_simplified.shp')
 water = water.to_crs(epsg=2158)
 
 rivers = gpd.read_file('data_files/Files_for_analysis/Ire_Rivers_Canals.shp')
@@ -56,8 +59,9 @@ counties = counties.to_crs(epsg=2158)
 center_counties = gpd.read_file('data_files/Simplified_Shapes/Counties_Center_pts.shp')
 center_counties = center_counties.to_crs(epsg=2158)
 
-towns = gpd.read_file('data_files/Files_for_analysis/Ire_Places.shp')
+towns = gpd.read_file('data_files/Simplified_Shapes/Ire_Places_simplified.shp')
 towns = towns.to_crs(epsg=2158)
+
 
 water_per_county = gpd.read_file('data_files/Files_for_analysis/water_per_county.shp')
 # water_per_county = gpd.read_file('data_files/Files_for_analysis/water_per_county.shp')
@@ -104,33 +108,36 @@ Waterbodies = ShapelyFeature(water['geometry'], myCRS,
                              linewidth=1)
 ax.add_feature(Waterbodies)
 
+"""
 Rivers = ShapelyFeature(rivers['geometry'], myCRS,
                         edgecolor='royalblue',
                         linewidth=1)
 
 ax.add_feature(Rivers)
-
+"""
 """Adding Towns to the map"""
 # ShapelyFeature creates a polygon, so for point data we can just use ax.plot()
 # town_handle = ax.plot(towns.geometry.x, towns.geometry.y, 's', color='0.5', ms=6, transform=myCRS)
 
-# town_handle = ax.plot(towns[towns['fclass'] == 'town'].geometry.x, towns[towns['fclass'] == 'town'].geometry.y, 's', color='0', ms=6, transform=myCRS)
+town_handle = ax.plot(towns[towns['fclass'] == 'town'].geometry.x, towns[towns['fclass'] == 'town'].geometry.y, 's',
+                      color='y', ms=6, transform=myCRS)
 
 city_handle = ax.plot(towns[towns['fclass'] == 'city'].geometry.x, towns[towns['fclass'] == 'city'].geometry.y, '*',
                       color='r', ms=6, transform=myCRS)
+
 
 # note: if you change the color you use to display lakes, you'll want to change it here, too
 water_handle = generate_handles(['Waterbodies'], ['mediumblue'])
 
 # note: if you change the color you use to display rivers, you'll want to change it here, too
-rivers_handle = [mlines.Line2D([], [], color='royalblue')]  # have to make this a list
+#rivers_handle = [mlines.Line2D([], [], color='royalblue')]  # have to make this a list
 
-"""
+
 # add the text labels for the towns
 for i, row in towns.iterrows():
     x, y = row.geometry.x, row.geometry.y
-    plt.text(x, y, row['name'].title(), fontsize=8, transform=myCRS) # use plt.text to place a label at x,y
-"""
+    plt.text(x, y, row['name'].title(), fontsize=6, transform=myCRS) # use plt.text to place a label at x,y
+
 
 """
 # add the text labels for the counties
@@ -143,8 +150,8 @@ for i, row in center_counties.iterrows():
     plt.text(x, y, row['name'].title(), fontsize=4, transform=myCRS)  # use plt.text to place a label at x,y
 
 # ax.legend() takes a list of handles and a list of labels corresponding to the objects you want to add to the legend
-handles = city_handle + water_handle + rivers_handle
-labels = ['Cities', 'Waterbodies', 'Rivers']
+handles = city_handle + town_handle + water_handle #+ rivers_handle
+labels = ['Cities', 'Towns', 'Waterbodies'] # 'Rivers']
 
 leg = ax.legend(handles, labels, title='Legend', title_fontsize=14,
                 fontsize=12, loc='upper left', frameon=True, framealpha=1)
