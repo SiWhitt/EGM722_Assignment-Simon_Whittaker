@@ -201,13 +201,13 @@ clip_total = clipped_gdf['Length'].sum()
 
 total_rivers_per_county = (clipped_gdf.groupby('name')[['Length']].sum() / 1000)
 
-fig = total_rivers_per_county.plot(kind='bar', width=0.8, rot=90, title="Total Length of Rivers in Irish Counties")
+fig = total_rivers_per_county.plot(kind='bar', width=0.8, rot=90, title="Total Length (in km) of Rivers in Irish Counties")
 
 plt.style.use('seaborn-dark-palette')
 plt.minorticks_on()
 plt.grid(which='both', axis='y', linestyle='-', linewidth='0.5', color='black')
 plt.xlabel('Counties')
-plt.ylabel('Total Length of Rivers')
+plt.ylabel('Total Length of Rivers in km')
 
 plt.subplots_adjust(bottom=0.25, left=0.2)
 
