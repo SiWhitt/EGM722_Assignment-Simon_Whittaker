@@ -229,6 +229,8 @@ cax = divider.append_axes("right", size="5%", pad=0.1, axes_class=plt.Axes)
 ax = water_per_county.plot(column='sum_area_s', ax=ax, vmin=0, vmax=275, cmap='bone_r', edgecolor='k',
                            legend=True, cax=cax, legend_kwds={'label': 'Total Area of Waterbodies in sq km'})
 
+ax.set(title='Map of Irish counties with total area of inland waterbodies in sq km')  # Apply Title to Map of Ireland with Towns
+
 # Switch off the bounding box drawn round the map so it looks a bit tidier
 ax.axis('off')
 
