@@ -43,10 +43,6 @@ def scale_bar(ax, location=(0.9, 0.05)):
 outline = gpd.read_file('data_files/Simplified_Shapes/Ireland.shp')
 outline = outline.to_crs(epsg=2158)
 
-# load datasets for display on map
-#water = gpd.read_file('data_files/Files_for_analysis/Ire_Water.shp')
-#water = water.to_crs(epsg=2158)
-
 water = gpd.read_file('data_files/Simplified_Shapes/Ire_Water_simplified.shp')
 water = water.to_crs(epsg=2158)
 
@@ -62,10 +58,8 @@ center_counties = center_counties.to_crs(epsg=2158)
 towns = gpd.read_file('data_files/Simplified_Shapes/Ire_Places_simplified.shp')
 towns = towns.to_crs(epsg=2158)
 
-
 water_per_county = gpd.read_file('data_files/Files_for_analysis/water_per_county.shp')
-# water_per_county = gpd.read_file('data_files/Files_for_analysis/water_per_county.shp')
-# water_per_county = water_per_county.to_crs(epsg=2158)
+
 
 # create a figure of size 20x60 (representing the page size in inches)
 myFig = plt.figure(figsize=(10, 30))
@@ -96,9 +90,7 @@ Counties = ShapelyFeature(counties['geometry'], myCRS,
                           linewidth=0.25)
 ax.add_feature(Counties)
 
-# get a list of unique names for the county boundaries
-# county_names = list(counties.name.unique())
-# county_names.sort()  # sort the counties alphabetically by name
+
 
 
 """Adding Water bodies to the map"""
@@ -108,14 +100,7 @@ Waterbodies = ShapelyFeature(water['geometry'], myCRS,
                              linewidth=1)
 ax.add_feature(Waterbodies)
 
-"""
-Rivers = ShapelyFeature(rivers['geometry'], myCRS,
-                        edgecolor='royalblue',
-                        linewidth=1)
 
-ax.add_feature(Rivers)
-"""
-"""Adding Towns to the map"""
 # ShapelyFeature creates a polygon, so for point data we can just use ax.plot()
 # town_handle = ax.plot(towns.geometry.x, towns.geometry.y, 's', color='0.5', ms=6, transform=myCRS)
 
@@ -128,9 +113,6 @@ city_handle = ax.plot(towns[towns['fclass'] == 'city'].geometry.x, towns[towns['
 
 # note: if you change the color you use to display lakes, you'll want to change it here, too
 water_handle = generate_handles(['Waterbodies'], ['mediumblue'])
-
-# note: if you change the color you use to display rivers, you'll want to change it here, too
-#rivers_handle = [mlines.Line2D([], [], color='royalblue')]  # have to make this a list
 
 
 # add the text labels for the towns
@@ -156,15 +138,7 @@ labels = ['Cities', 'Towns', 'Waterbodies'] # 'Rivers']
 leg = ax.legend(handles, labels, title='Legend', title_fontsize=14,
                 fontsize=12, loc='upper left', frameon=True, framealpha=1)
 
-"""
-handles = county_handles + water_handle + river_handle + town_handle + city_handle
-labels = nice_names + ['Lakes', 'Rivers', 'Towns', 'Cities']
 
-leg = ax.legend(handles, labels, title='Legend', title_fontsize=14,
-                 fontsize=12, loc='upper left', frameon=True, framealpha=1)
-
-
-"""
 
 scale_bar(ax)  # Add scale bar to map
 
@@ -235,5 +209,3 @@ ax.set(title='Map of Irish counties with total area of inland waterbodies in sq 
 ax.axis('off')
 
 fig.savefig('data_files/Total area of inland water per county in ireland.png', dpi=300, bbox_inches='tight')
-
-"""Possibly add code which creates a buffer around costal towns and displays shipwrecks"""
