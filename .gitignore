@@ -1,11 +1,15 @@
+#Image files 
 
 *.png
+*.jpg
+
+#Other files
+
 *.lock
-
-
-Create_chloropleth_map_of_water_area_per_county.ipynb
-.ipynb_checkpoints/Create_chloropleth_map_of_water_area_per_county-checkpoint.ipynb
+*Create_chloropleth_map_of_water_area_per_county.ipynb
 *.ipynb
 
-.idea
+#Folders
 
+.idea/
+.ipynb_checkpoints
