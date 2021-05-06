@@ -102,7 +102,7 @@ ax.add_feature(Waterbodies)
 
 
 # ShapelyFeature creates a polygon, so for point data we can just use ax.plot()
-# town_handle = ax.plot(towns.geometry.x, towns.geometry.y, 's', color='0.5', ms=6, transform=myCRS)
+
 
 town_handle = ax.plot(towns[towns['fclass'] == 'town'].geometry.x, towns[towns['fclass'] == 'town'].geometry.y, 's',
                       color='y', ms=6, transform=myCRS)
