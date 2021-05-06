@@ -21,7 +21,6 @@ import cartopy.crs as ccrs
 import matplotlib.patches as mpatches
 import pandas as pd
 
-
 # load the required datasets from data_files folder and standardise the CRS of each shapefile.
 outline = gpd.read_file('data_files/Simplified_Shapes/Ireland.shp')
 outline = outline.to_crs(epsg=2158)
@@ -47,6 +46,7 @@ myCRS = ccrs.UTM(29)  # create a Universal Transverse Mercator reference system 
 
 """ Output 1 - The following lines of code produce a map to assist with the trip planning process"""
 
+
 # generate matplotlib handles for inclusion on the planning map legend highlighting significant features
 def generate_handles(labels, colors, edge='k', alpha=1):
     lc = len(colors)  # get the length of the color list
@@ -55,6 +55,7 @@ def generate_handles(labels, colors, edge='k', alpha=1):
     for i in range(len(labels)):
         handles.append(mpatches.Rectangle((0, 0), 1, 1, facecolor=colors[i % lc], edgecolor=edge, alpha=alpha))
     return handles
+
 
 # create a scale bar of length 40 km to be positioned in the lower right corner of the map
 def scale_bar(ax, location=(0.9, 0.05)):
@@ -81,7 +82,6 @@ output1 = plt.figure(figsize=(10, 30))
 
 # create an axes object in output 1 using the mercator projection to allow data to be plotted
 ax = plt.axes(projection=ccrs.Mercator())
-
 
 # define map outline and figure extent. Set outline colors and add outline of Ireland to the map
 outline_feature = ShapelyFeature(outline['geometry'], myCRS, edgecolor='k', facecolor='w')
@@ -150,37 +150,36 @@ ax.set(title='Map for planning fishing trips in Ireland')
 # save the planning map to the data_files folder within the repository at a suitable resolution/dpi
 output1.savefig('data_files/Planning Map.png', bbox_inches='tight', dpi=300)
 
-"""The following lines of code use the rivers shapefile alongwith the counties shaprfile to produce a barchart
-depicting the total lenght of rivers in each county in ireland and Northern Ireland"""
+""" Output 2 - The following lines of code join shapefiles containing rivers on the Island of Ireland with a second 
+shapefile containing the counties in Ireland and Northern Ireland to produce a bar graph depicting the total length 
+of rivers in each county in Ireland"""
 
-for i, row in rivers.iterrows():  # iterate over each row in the GeoDataFrame
-    rivers.loc[i, 'Length'] = row['geometry'].length  # assign the row's geometry length to a new column, Length
+# iterate over each row in the rivers shapefile and assign each row's geometry length to a new length column
+for i, row in rivers.iterrows():
+    rivers.loc[i, 'Length'] = row['geometry'].length
 
-# print(rivers.head())  # print the updated GeoDataFrame to see the changes
+# join the rivers and counties shapefiles
+join = gpd.sjoin(rivers, counties)
 
-join = gpd.sjoin(rivers, counties)  # , how='inner', lsuffix='left', rsuffix='right') # perform the spatial join
-
-join_total = join['Length'].sum()  # find the total length of roads in the join GeoDataFrame
-
-clipped = []  # initialize an empty list
+# initialise an empty list and clips each river feature by county border
+# adds the county name to each clipped feature and calculates the length of clipped river features
+clipped = []
 for county in counties['name'].unique():
-    tmp_clip = gpd.clip(rivers, counties[counties['name'] == county])  # clip the roads by county border
+    tmp_clip = gpd.clip(rivers, counties[counties['name'] == county])
     for i, row in tmp_clip.iterrows():
-        tmp_clip.loc[i, 'Length'] = row['geometry'].length  # we have to update the length for any clipped roads
-        tmp_clip.loc[i, 'name'] = county  # set the county name for each road feature
-    clipped.append(tmp_clip)  # add the clipped GeoDataFrame to the
+        tmp_clip.loc[i, 'Length'] = row['geometry'].length
+        tmp_clip.loc[i, 'name'] = county
+    clipped.append(tmp_clip)
 
-# pandas has a function, concat, which will combine (concatenate) a list of DataFrames (or GeoDataFrames)
-# we can then create a GeoDataFrame from the combined DataFrame, as the combined DataFrame will have a geometry column.
+# concatenate the list of clipped dataframes and creates a GeoDataframe containing a geometry column
 clipped_gdf = gpd.GeoDataFrame(pd.concat(clipped))
-clip_total = clipped_gdf['Length'].sum()
 
-# print (clipped_gdf.groupby('name') [['Length']].sum()/1000)
-
+# calculate the sum of all river features in each county (and / 1000 to convert form m to km)
 total_rivers_per_county = (clipped_gdf.groupby('name')[['Length']].sum() / 1000)
 
+# create and format a bar graph with suitable title / axis labels / gridlines and colors
 fig = total_rivers_per_county.plot(kind='bar', width=0.8, rot=90,
-                                   title= "Total Length (in km) of Rivers in Irish Counties")
+                                   title="Total Length (in km) of Rivers in Irish Counties")
 
 plt.style.use('seaborn-dark-palette')
 plt.minorticks_on()
@@ -190,8 +189,7 @@ plt.ylabel('Total Length of Rivers in km')
 
 plt.subplots_adjust(bottom=0.25, left=0.2)
 
-# plt.show
-
+# save the output 2 bar graph in the data_files folder with a relevant name
 output2 = fig.get_figure()
 output2.savefig('data_files/Total Length of rivers in Irish Counties.png', transparent=True, dpi=300)
 
