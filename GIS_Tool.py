@@ -45,11 +45,9 @@ water_per_county = gpd.read_file('data_files/Files_for_analysis/water_per_county
 
 myCRS = ccrs.UTM(29)  # create a Universal Transverse Mercator reference system to transform our data.
 
-
 """ Output 1 - The following lines of code produce a map to assist with the trip planning process"""
 
 # generate matplotlib handles for inclusion on the planning map legend highlighting significant features
-
 def generate_handles(labels, colors, edge='k', alpha=1):
     lc = len(colors)  # get the length of the color list
     handles = []
@@ -58,9 +56,7 @@ def generate_handles(labels, colors, edge='k', alpha=1):
         handles.append(mpatches.Rectangle((0, 0), 1, 1, facecolor=colors[i % lc], edgecolor=edge, alpha=alpha))
     return handles
 
-
 # create a scale bar of length 40 km to be positioned in the lower right corner of the map
-
 def scale_bar(ax, location=(0.9, 0.05)):
     llx0, llx1, lly0, lly1 = ax.get_extent(ccrs.PlateCarree())
     sbllx = (llx1 + llx0) / 2
@@ -81,7 +77,7 @@ def scale_bar(ax, location=(0.9, 0.05)):
 
 
 # create a figure of page size 10 inches x 30 inches
-myFig = plt.figure(figsize=(10, 30))
+output1 = plt.figure(figsize=(10, 30))
 
 # create an axes object in output 1 using the mercator projection to allow data to be plotted
 ax = plt.axes(projection=ccrs.Mercator())
@@ -109,7 +105,6 @@ Counties = ShapelyFeature(counties['geometry'], myCRS,
                           facecolor='w',
                           linewidth=0.25)
 ax.add_feature(Counties)
-
 
 # adding significant waterbodies to the planning map and formatting
 Waterbodies = ShapelyFeature(water['geometry'], myCRS,
@@ -146,16 +141,14 @@ labels = ['Cities', 'Towns', 'Waterbodies']
 leg = ax.legend(handles, labels, title='Legend', title_fontsize=14,
                 fontsize=12, loc='upper left', frameon=True, framealpha=1)
 
-#add scale bar to map
+# add scale bar to map
 scale_bar(ax)
 
 # create and add title to the planning map
 ax.set(title='Map for planning fishing trips in Ireland')
 
 # save the planning map to the data_files folder within the repository at a suitable resolution/dpi
-myFig.savefig('data_files/Planning Map.png', bbox_inches='tight', dpi=300)
-
-
+output1.savefig('data_files/Planning Map.png', bbox_inches='tight', dpi=300)
 
 """The following lines of code use the rivers shapefile alongwith the counties shaprfile to produce a barchart
 depicting the total lenght of rivers in each county in ireland and Northern Ireland"""
@@ -186,7 +179,8 @@ clip_total = clipped_gdf['Length'].sum()
 
 total_rivers_per_county = (clipped_gdf.groupby('name')[['Length']].sum() / 1000)
 
-fig = total_rivers_per_county.plot(kind='bar', width=0.8, rot=90, title="Total Length (in km) of Rivers in Irish Counties")
+fig = total_rivers_per_county.plot(kind='bar', width=0.8, rot=90,
+                                   title= "Total Length (in km) of Rivers in Irish Counties")
 
 plt.style.use('seaborn-dark-palette')
 plt.minorticks_on()
@@ -198,15 +192,13 @@ plt.subplots_adjust(bottom=0.25, left=0.2)
 
 # plt.show
 
-chart = fig.get_figure()
-chart.savefig('data_files/Total Length of rivers in Irish Counties.png', transparent=True, dpi=300)
-
-
+output2 = fig.get_figure()
+output2.savefig('data_files/Total Length of rivers in Irish Counties.png', transparent=True, dpi=300)
 
 """The following lines of code create a chloropleth map of the inland water area of counties in ireland 
 to determine which would be best to visit for a fishing trip"""
 
-fig, ax = plt.subplots(1, figsize=(12, 18))
+output3, ax = plt.subplots(1, figsize=(12, 18))
 # to make a nice colorbar that stays in line with our map, use these lines:
 divider = make_axes_locatable(ax)
 cax = divider.append_axes("right", size="5%", pad=0.1, axes_class=plt.Axes)
@@ -214,9 +206,10 @@ cax = divider.append_axes("right", size="5%", pad=0.1, axes_class=plt.Axes)
 ax = water_per_county.plot(column='sum_area_s', ax=ax, vmin=0, vmax=275, cmap='bone_r', edgecolor='k',
                            legend=True, cax=cax, legend_kwds={'label': 'Total Area of Waterbodies in sq km'})
 
-ax.set(title='Map of Irish counties with total area of inland waterbodies in sq km')  # Apply Title to Map of Ireland with Towns
+# create and add title to choropleth map of Ireland waterbodies
+ax.set(title='Map of Irish counties with total area of inland waterbodies in sq km')
 
 # Switch off the bounding box drawn round the map so it looks a bit tidier
 ax.axis('off')
 
-fig.savefig('data_files/Total area of inland water per county in ireland.png', dpi=300, bbox_inches='tight')
+output3.savefig('data_files/Total area of inland water per county in ireland.png', dpi=300, bbox_inches='tight')
