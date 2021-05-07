@@ -11,7 +11,7 @@ Finally a choropleth map will be produced containing the area of inland waterbod
 in Ireland.
 """
 
-# import the required modules to ensue that the scrip runs as intended
+# import the required modules to ensue that the script runs as intended
 import matplotlib.lines as mlines
 import geopandas as gpd
 import matplotlib.pyplot as plt
