@@ -34,15 +34,11 @@ Further information on each of the dataset shapefiles can be found within he met
 # Dependencies
 Within the repository an environment.yml file can be found containing the dependencies required to ensure the GIS_Tool.py script runs smoothly and creates the required outputs after processing the datasets. When opened the following dependencies can be observed:
 
-  •	Python – v 3.8.8 – Python is an open-source programming language (Python, 2021) which specialises in scientific and numerical computing (wiki python, 2021). Python’s strengths in image processing and visualisation make it ideal for Geospatial and Imagery Analysis applications. 
-  
-  •	geopandas – v 0.9.0 – An easy to use open-source project which allows the user to work with geospatial data using python, without the need to create a specialised geospatial database (Geopandas, 2021)
-  
-  •	cartopy – v 0.18.0 – A freely available python package used for geospatial data processing, transforming features between projections and map production (Cartopy, 2021).
-  
-  •	matplotlib – v 3.4.1 – matplotlib is a free to use community project that specialises in creating high quality 2D and 3D visualisations using the python programming language (Matplotlib, 2021).
-  
-  •	pandas – v 1.2.4 – An open source package which can be used within python to join, merge and manipulate datasets (Pandas, 2021).
+  •	Python – v 3.8.8 
+  •	geopandas – v 0.9.0   
+  •	cartopy – v 0.18.0 
+  •	matplotlib – v 3.4.1 
+  •	pandas – v 1.2.4 
 
 To make use of these dependencies an environment, in which the dependencies have been installed, must be created. Figure 2, below, describes the steps to download Anaconda Navigator and create a python environment from the repository environment.yml file. This will ensure the GIS_Tool.py script runs smoothly to process the project datafiles and create the output files for further analysis.
 
