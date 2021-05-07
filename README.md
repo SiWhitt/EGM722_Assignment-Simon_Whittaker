@@ -29,7 +29,6 @@ OSM was chosen as it is licensed under the Open Data Commons Open Database Licen
 The data_files folder has been split into 2 further folders to delineate which shapefiles are for display purposes only and which have been used in the analysis process. Files which will not undergo any analysis have been saved into the Simplified_Shapes folder for use in displaying Output 1, the overview / orientation map of Ireland. These shapefiles have been modified using ArcGIS to remove database entries thus simplifying the files and reducing their physical size. The knock-on effect is that these shape files require less storage and process more quickly when the project script runs.
 
 The second folder, named Files_For_Analysis, contains the original shapefiles which have been re-named to simplify and clarify the script writing and reading process. These files are used to compute Output 2, the total length of rivers in each county, and Output 3 displaying the total area of waterbodies in each county in Ireland.
-Further information on each of the dataset shapefiles can be found within he methodology section of this report.
 
 # Dependencies
 Within the repository an environment.yml file can be found containing the dependencies required to ensure the GIS_Tool.py script runs smoothly and creates the required outputs after processing the datasets. When opened the following dependencies can be observed:
