@@ -177,7 +177,7 @@ clipped_gdf = gpd.GeoDataFrame(pd.concat(clipped))
 # calculate the sum of all river features in each county (and / 1000 to convert form m to km)
 total_rivers_per_county = (clipped_gdf.groupby('name')[['Length']].sum() / 1000)
 
-# create and format a bar graph with suitable title / axis labels / gridlines and colors
+# create and format a bar graph with suitable title, axis labels, gridlines and colors
 fig = total_rivers_per_county.plot(kind='bar', width=0.8, rot=90,
                                    title="Total Length (in km) of Rivers in Irish Counties")
 
@@ -193,21 +193,25 @@ plt.subplots_adjust(bottom=0.25, left=0.2)
 output2 = fig.get_figure()
 output2.savefig('data_files/Total Length of rivers in Irish Counties.png', transparent=True, dpi=300)
 
-"""The following lines of code create a chloropleth map of the inland water area of counties in ireland 
+"""Output 3 - The following lines of code create a choropleth map of the inland water area of counties in ireland 
 to determine which would be best to visit for a fishing trip"""
 
+# create a figure that is 12 x 18 inches in size
 output3, ax = plt.subplots(1, figsize=(12, 18))
-# to make a nice colorbar that stays in line with our map, use these lines:
+
+# create a color bar which will display beside the figure
 divider = make_axes_locatable(ax)
 cax = divider.append_axes("right", size="5%", pad=0.1, axes_class=plt.Axes)
 
+# format the color bar for presentation with correct color scale and label
 ax = water_per_county.plot(column='sum_area_s', ax=ax, vmin=0, vmax=275, cmap='bone_r', edgecolor='k',
                            legend=True, cax=cax, legend_kwds={'label': 'Total Area of Waterbodies in sq km'})
 
 # create and add title to choropleth map of Ireland waterbodies
 ax.set(title='Map of Irish counties with total area of inland waterbodies in sq km')
 
-# Switch off the bounding box drawn round the map so it looks a bit tidier
+# Tidy up the map by removing the bounding box, axis and gridlines
 ax.axis('off')
 
+# save output 3 as a png file with a suitable name and resolution
 output3.savefig('data_files/Total area of inland water per county in ireland.png', dpi=300, bbox_inches='tight')
