@@ -3,11 +3,13 @@
 *.png
 *.jpg
 
+
 #Other files
 
 *.lock
 *Create_chloropleth_map_of_water_area_per_county.ipynb
 *.ipynb
+*.csv
 
 #Folders
 
